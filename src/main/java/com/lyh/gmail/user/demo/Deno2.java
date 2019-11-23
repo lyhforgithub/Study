@@ -40,43 +40,38 @@ public class Deno2 {
     }
 
     private static int b = 0;
-
-     private static  int c = 0;
-
+    private static  int c = 0;
+    private static AtomicInteger atomicInteger = new AtomicInteger(0);
+    static synchronized void getNext(){
+        c++;
+        atomicInteger.getAndIncrement();
+    }
     /**
      * AtomicInteger属于原子性操作
      */
      AtomicInteger testAtomicInteger(){
-         number num = new number();
-         AtomicInteger atomicInteger = new AtomicInteger(0);
         try {
-            while (b<200){
-                //num.setE(b);
+            for (int i = 0; i <100 ; i++) {
                 new Thread(() -> {
-                    //synchronized (num) {
-                        System.out.println(Thread.currentThread().getName());
                         for (int j = 0; j < 100; j++) {
-                            c++;
-                            atomicInteger.getAndIncrement();
-                        }
-                    //}
-                }).start();
-                b++;
-                //System.out.println("循环中的原子" + atomicInteger + Thread.currentThread().getName());
-                }
 
-            while (Thread.activeCount()>2){
-                Thread.yield();
-            }
-            //Thread.sleep(1);
+                                 getNext();
+
+                        }
+                }).start();
+//                System.out.println("循环中的原子" + atomicInteger + Thread.currentThread().getName());
+                }
+//            while (Thread.activeCount()>2){
+//                Thread.yield();
+//            }
             //System.out.println("原子"+atomicInteger+Thread.currentThread().getName());
             System.out.println("普通"+c);
-            //return atomicInteger;
-            atomicInteger.getAndIncrement();
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            return atomicInteger;
         }
-        return atomicInteger;
+
     }
 
 }
